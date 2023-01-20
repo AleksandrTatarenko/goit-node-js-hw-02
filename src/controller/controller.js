@@ -1,12 +1,14 @@
 const service = require('../services/contacts')
 
 const get = async (req, res, next) => {
+  const { username } = req.user
   try {
     const results = await service.getAllContacts()
     res.json({
       status: 'success',
       code: 200,
       data: {
+        message: `Authorization was successful: ${username}`,
         contacts: results,
       },
     }) 
