@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const User = require('../services/schemas/user')
-var gravatar = require('gravatar')
+const gravatar = require('gravatar')
 require('dotenv').config()
 const secret = process.env.SECRET
 
@@ -64,15 +64,15 @@ const singUpUser = async (req, res, next) => {
 }
 
 const singOutUser = async (req, res, next) => {
-  const { _id, email } = req.user
-  await User.findByIdAndUpdate({_id}, { token: null })
+  const { _id, email } = req.user;
+  await User.findByIdAndUpdate({ _id }, { token: null });
   res.status(201).json({
     status: 'success',
     code: 201,
     data: {
       message: `${email} sing out!`,
     }
-  }),
+  })
   next()
 }
 
