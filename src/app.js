@@ -10,6 +10,8 @@ app.use(express.json())
 
 app.use(cors())
 
+app.use("/public", express.static('public'))
+
 require('./config/config-passport')
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'

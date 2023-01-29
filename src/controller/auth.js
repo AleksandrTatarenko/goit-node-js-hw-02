@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const User = require('../services/schemas/user')
+var gravatar = require('gravatar')
 require('dotenv').config()
 const secret = process.env.SECRET
 
@@ -46,7 +47,8 @@ const singUpUser = async (req, res, next) => {
     })
   }
   try {
-    const newUser = new User({ username, email })
+    const avatarURL = gravatar.url(email)
+    const newUser = new User({ username, email, avatarURL})
     newUser.setPassword(password)
     await newUser.save()
     res.status(201).json({
