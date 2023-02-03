@@ -1,8 +1,10 @@
-const jwt = require('jsonwebtoken')
-const User = require('../services/schemas/user')
-const gravatar = require('gravatar')
-require('dotenv').config()
-const secret = process.env.SECRET
+const jwt = require('jsonwebtoken');
+const User = require('../services/schemas/user');
+const gravatar = require('gravatar');
+const { v4: uuidv4 } = require('uuid');
+require('dotenv').config();
+const secret = process.env.SECRET;
+const sendEmail = require('../services/verification');
 
 const singInUser = async (req, res, next) => {
   const { email, password } = req.body
@@ -36,7 +38,7 @@ const singInUser = async (req, res, next) => {
 }
 
 const singUpUser = async (req, res, next) => {
-  const { username, email, password } = req.body
+  const { username, email, password } = req.body;
   const user = await User.findOne({ email })
   if (user) {
     return res.status(409).json({
@@ -47,10 +49,22 @@ const singUpUser = async (req, res, next) => {
     })
   }
   try {
-    const avatarURL = gravatar.url(email)
-    const newUser = new User({ username, email, avatarURL})
-    newUser.setPassword(password)
-    await newUser.save()
+    const avatarURL = gravatar.url(email);
+    const verificationToken = uuidv4();
+
+    const newUser = new User({ email, avatarURL, verificationToken });
+
+    newUser.setPassword(password);
+    await newUser.save();
+
+    sendEmail(email, verificationToken);
+
+    const verifiedUser = await User.findOne({email});
+
+    if (verifiedUser.verify) {
+      await User.findOneAndUpdate({email}, { username: username });
+    }
+
     res.status(201).json({
       status: 'success',
       code: 201,
