@@ -4,6 +4,10 @@ const bCrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
 
 const user = new Schema({
+  username: {
+    type: String,
+    default: null
+  },
   email: {
     type: String,
     required: [true, "Email required"],
@@ -26,6 +30,14 @@ const user = new Schema({
   },
   avatarURL: {
     type: String,
+  },
+  verify: {
+    type: Boolean,
+    default: false,
+  },
+  verificationToken: {
+    type: String,
+    required: [true, 'Verify token is required'],
   },
 });
 
