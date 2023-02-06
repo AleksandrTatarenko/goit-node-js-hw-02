@@ -1,3 +1,4 @@
 PORT=0000
 DB_HOST=string
 SECRET=string
+SENDGRID_API_KEY=string
